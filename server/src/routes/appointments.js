@@ -2,9 +2,10 @@ import { Router } from 'express';
 import { body, param, query, validationResult } from 'express-validator';
 import mongoose from 'mongoose';
 import Appointment from '../models/Appointment.js';
+import { connectDatabase } from '../db.js';
 
 const router = Router();
-const asyncRoute = handler => (req, res, next) => Promise.resolve(handler(req, res, next)).catch(next);
+const asyncRoute = handler => (req, res, next) => connectDatabase().then(() => handler(req, res, next)).catch(next);
 const validate = (req, res, next) => { const errors = validationResult(req); if (!errors.isEmpty()) return res.status(400).json({ success: false, message: errors.array()[0].msg, errors: errors.array() }); next(); };
 const appointmentFields = [
   body('customerName').isString().withMessage('Customer name is required').bail().trim().notEmpty().withMessage('Customer name is required').isLength({ max: 100 }).withMessage('Customer name must be 100 characters or fewer'),

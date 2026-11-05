@@ -1,10 +1,10 @@
 import 'dotenv/config';
-import mongoose from 'mongoose';
 import app from './app.js';
+import { connectDatabase } from './db.js';
 
 const port = process.env.PORT || 5000;
 try {
-  await mongoose.connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/appointment_manager');
+  await connectDatabase();
   app.listen(port, () => console.log(`Appointment Manager API listening on http://localhost:${port}`));
 } catch (error) {
   console.error('Could not connect to MongoDB:', error.message);
